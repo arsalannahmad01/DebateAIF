@@ -8,8 +8,6 @@ import { toast } from 'react-hot-toast';
 const DURATION_OPTIONS = [
   { value: 30, label: '30 minutes' },   // 15-15 split
   { value: 60, label: '1 hour' },       // 30-30 split
-  { value: 90, label: '1.5 hours' },    // 45-45 split
-  { value: 120, label: '2 hours' }      // 60-60 split
 ];
 
 const topics = [
@@ -280,7 +278,7 @@ const DebateSetup = () => {
               <textarea
                 value={aiStance}
                 onChange={(e) => setAiStance(e.target.value)}
-                placeholder="Describe AI's stance or give specific instructions (e.g., 'Argue that social media has a negative impact on mental health')"
+                placeholder="Describe AI's stance or give specific instructions (e.g., 'In favour of AI regulation', 'in favour', 'against etc')"
                 className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none h-24"
               />
               <p className="mt-1 text-sm text-gray-500">

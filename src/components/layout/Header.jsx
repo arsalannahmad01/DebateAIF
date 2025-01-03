@@ -30,13 +30,14 @@ const Header = () => {
     <header className={`fixed w-full z-50 transition-all duration-300 ${
       isScrolled ? 'bg-white shadow-md' : 'bg-transparent'
     }`}>
+      <div className="absolute inset-0 bg-white/80 backdrop-blur-sm -z-10"></div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Logo />
           <nav className="hidden md:flex space-x-8">
             <NavLink href="/">Home</NavLink>
-            <NavLink href="/features">Features</NavLink>
-            <NavLink href="/pricing">Pricing</NavLink>
+            {/* <NavLink href="/features">Features</NavLink> */}
+            {/* <NavLink href="/pricing">Pricing</NavLink> */}
             <NavLink href="/about">About Us</NavLink>
             <NavLink href="/contact">Contact</NavLink>
           </nav>

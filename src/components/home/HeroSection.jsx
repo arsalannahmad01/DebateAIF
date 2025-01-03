@@ -36,11 +36,11 @@ const HeroSection = () => {
               >
                 Get Started Free
               </Button>
-              <Button variant="secondary">
+              {/* <Button variant="secondary">
                 Learn More
-              </Button>
+              </Button> */}
             </div>
-            <div className="flex items-center gap-8 pt-4">
+            {/* <div className="flex items-center gap-8 pt-4">
               <div className="text-center">
                 <div className="text-2xl font-bold gradient-text">10k+</div>
                 <div className="text-gray-600">Active Users</div>
@@ -53,7 +53,7 @@ const HeroSection = () => {
                 <div className="text-2xl font-bold gradient-text">95%</div>
                 <div className="text-gray-600">Success Rate</div>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Right Column - Illustration */}

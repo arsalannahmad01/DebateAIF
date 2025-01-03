@@ -7,7 +7,7 @@ const Home = () => {
     <main className="pt-16">
       <HeroSection />
       <FeaturesSection />
-      <TestimonialsSection />
+      {/* <TestimonialsSection /> */}
     </main>
   );
 };

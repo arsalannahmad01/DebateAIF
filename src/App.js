@@ -13,6 +13,10 @@ import Analytics from './pages/Analytics';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import DebateSetup from './components/practice/DebateSetup';
+import Contact from './pages/Contact';
+import About from './pages/About';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Terms from './pages/Terms';
 
 function App() {
   const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -78,6 +82,10 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<Terms />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
             <Footer />

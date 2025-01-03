@@ -15,7 +15,7 @@ const WelcomeCard = ({ user }) => {
           Welcome back, {user.name}!
         </h1>
         <p className="text-primary-100 mb-6">
-          Your last practice was {lastPractice}. Ready to improve?
+          Turn Ideas Into Impact. Perfect Your Debates with AI.
         </p>
         {/* <Button
           variant="white"

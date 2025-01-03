@@ -14,20 +14,20 @@ const actions = [
     href: '/practice/setup',
     color: 'from-purple-500 to-pink-500'
   },
-  {
-    title: 'Trending Topics',
-    description: 'Explore the most debated topics of the week',
-    icon: ArrowTrendingUpIcon,
-    href: '/topics/trending',
-    color: 'from-blue-500 to-cyan-500'
-  },
-  {
-    title: 'Progress Report',
-    description: 'Track your improvement over time',
-    icon: ChartBarIcon,
-    href: '/analytics',
-    color: 'from-green-500 to-emerald-500'
-  }
+  // {
+  //   title: 'Trending Topics',
+  //   description: 'Explore the most debated topics of the week',
+  //   icon: ArrowTrendingUpIcon,
+  //   href: '/topics/trending',
+  //   color: 'from-blue-500 to-cyan-500'
+  // },
+  // {
+  //   title: 'Progress Report',
+  //   description: 'Track your improvement over time',
+  //   icon: ChartBarIcon,
+  //   href: '/analytics',
+  //   color: 'from-green-500 to-emerald-500'
+  // }
 ];
 
 const QuickActions = () => {

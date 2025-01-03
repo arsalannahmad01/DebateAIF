@@ -28,7 +28,7 @@ const Practice = () => {
   const [isDebateCompleted, setIsDebateCompleted] = useState(false);
 
   // Feedback state
-  const [showFeedback, setShowFeedback] = useState(true);
+  const [showFeedback, setShowFeedback] = useState(false);
   const [feedback, setFeedback] = useState({
     scores: { logic: 0, persuasion: 0, structure: 0 },
     suggestions: []
@@ -57,7 +57,92 @@ const Practice = () => {
     startDebate();
   }, []); // Run once on mount
 
-  // Handle AI stream response
+  // Modified timer effect to only count down turn time
+  useEffect(() => {
+    let timer;
+    if (isRunning && !isDebateCompleted) {
+      timer = setInterval(() => {
+        setTimeRemaining(prev => {
+          const newSpeakerTime = prev[currentSpeaker] - 1;
+
+          // Check if speaker's time is up
+          if (newSpeakerTime <= 0) {
+            handleTurnEnd();
+            return prev;
+          }
+
+          return {
+            ...prev,
+            [currentSpeaker]: newSpeakerTime
+          };
+        });
+      }, 1000);
+    }
+
+    return () => clearInterval(timer);
+  }, [isRunning, currentSpeaker, isDebateCompleted]);
+
+  // Handle turn change and deduct time from total
+  const handleTurnChange = (from, to) => {
+    const turnDuration = debateConfig.turnDuration;
+    
+    setTimeRemaining(prev => {
+      const newTotal = prev.total - turnDuration;
+      
+      // Check if debate should end
+      if (newTotal <= 0) {
+        handleDebateComplete();
+        return prev;
+      }
+
+      return {
+        total: newTotal,
+        user: to === 'user' ? turnDuration : prev.user,
+        ai: to === 'ai' ? turnDuration : prev.ai
+      };
+    });
+
+    setCurrentSpeaker(to);
+  };
+
+  // Modified argument submit handler
+  const handleArgumentSubmit = async (content) => {
+    if (!isInputEnabled || waitingForAIResponse) return;
+
+    try {
+      setIsInputEnabled(false);
+      setWaitingForAIResponse(true);
+
+      // Handle turn change from user to AI
+      handleTurnChange('user', 'ai');
+
+      // Update debate with user's argument
+      await debateService.updateDebate(debateConfig.debateId, {
+        userArgument: {
+          content,
+          type: 'rebuttal'
+        }
+      });
+
+      // Update UI
+      setMessages(prev => [...prev, {
+        type: 'user',
+        content,
+        side: 'user'
+      }]);
+
+      // Get AI's response
+      const stream = await debateService.getAIResponse(debateConfig.debateId, { content });
+      await handleAIStream(stream);
+
+    } catch (error) {
+      console.error('Failed to submit argument:', error);
+      toast.error('Failed to submit argument');
+      setIsInputEnabled(true);
+    }
+  };
+
+  // Modified AI stream handler
   const handleAIStream = async (stream) => {
     const reader = stream.getReader();
     let aiResponse = '';
@@ -75,6 +160,9 @@ const Practice = () => {
             const isDone = line.split(" ")[1] === '[DONE]';
             
             if (isDone) {
+              // Handle turn change from AI to user
+              handleTurnChange('ai', 'user');
+
               // Update debate with AI's argument
               await debateService.updateDebate(debateConfig.debateId, {
                 aiArgument: {
@@ -83,15 +171,6 @@ const Practice = () => {
                 }
               });
 
-              // // Update UI
-              // setMessages(prev => [...prev, {
-              //   type: 'ai',
-              //   content: aiResponse,
-              //   side: 'ai'
-              // }]);
-
-              // Switch to user's turn
-              setCurrentSpeaker('user');
               setIsInputEnabled(true);
               setWaitingForAIResponse(false);
               return aiResponse;
@@ -132,77 +211,13 @@ const Practice = () => {
     }
   };
 
-  // Handle user argument submission
-  const handleArgumentSubmit = async (content) => {
-    if (!isInputEnabled || waitingForAIResponse) return;
-
-    try {
-      setIsRunning(false);
-      setIsInputEnabled(false);
-      setWaitingForAIResponse(true);
-
-      // Update debate with user's argument
-      await debateService.updateDebate(debateConfig.debateId, {
-        userArgument: {
-          content,
-          type: 'rebuttal'
-        }
-      });
-
-      // Update UI
-      setMessages(prev => [...prev, {
-        type: 'user',
-        content,
-        side: 'user'
-      }]);
-
-      // Get AI's response
-      setCurrentSpeaker('ai');
-      const stream = await debateService.getAIResponse(debateConfig.debateId, { content });
-      await handleAIStream(stream);
-
-    } catch (error) {
-      console.error('Failed to submit argument:', error);
-      toast.error('Failed to submit argument');
-      setIsInputEnabled(true);
-    }
-  };
-
-  // Timer effect
-  useEffect(() => {
-    let timer;
-    if (isRunning && !isDebateCompleted) {
-      timer = setInterval(() => {
-        setTimeRemaining(prev => {
-          const newTotal = prev.total - 1;
-          const newSpeakerTime = prev[currentSpeaker] - 1;
-
-          if (newTotal <= 0) {
-            handleDebateComplete();
-            return prev;
-          }
-
-          if (newSpeakerTime <= 0) {
-            handleTurnEnd();
-            return prev;
-          }
-
-          return {
-            ...prev,
-            total: newTotal,
-            [currentSpeaker]: newSpeakerTime
-          };
-        });
-      }, 1000);
-    }
-
-    return () => clearInterval(timer);
-  }, [isRunning, currentSpeaker, isDebateCompleted]);
-
-  // Handle turn end
+  // Modified turn end handler
   const handleTurnEnd = () => {
     if (currentSpeaker === 'user') {
       handleArgumentSubmit('Time expired - no argument submitted');
+    } else {
+      // For AI turn timeout
+      handleTurnChange('ai', 'user');
     }
   };
 
@@ -222,6 +237,7 @@ const Practice = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <PracticeHeader 
+        title={debateConfig?.name}
         topic={debateConfig?.topic}
         timeRemaining={timeRemaining}
         currentSpeaker={currentSpeaker}

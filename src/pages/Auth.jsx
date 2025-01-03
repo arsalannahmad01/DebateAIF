@@ -1,118 +1,23 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useGoogleLogin } from '@react-oauth/google';
-import Button from '../components/common/Button';
-import { GoogleIcon } from '../components/common/Icons';
+import { motion } from 'framer-motion';
+import { toast } from 'react-hot-toast';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { useAuth } from '../contexts/AuthContext';
-import { toast } from 'react-hot-toast';
-
-const DecorativeBackground = () => (
-  <div className="fixed inset-0 overflow-hidden pointer-events-none">
-    {/* Gradient Mesh */}
-    <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-secondary-50 opacity-70" />
-    
-    {/* Animated Circles */}
-    <div className="absolute top-0 left-0 w-full h-full">
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary-200/30 rounded-full mix-blend-multiply filter blur-xl animate-float" />
-      <div className="absolute top-1/3 right-1/3 w-72 h-72 bg-secondary-200/30 rounded-full mix-blend-multiply filter blur-xl animate-float-delayed" />
-      <div className="absolute bottom-1/4 right-1/4 w-60 h-60 bg-primary-100/30 rounded-full mix-blend-multiply filter blur-xl animate-float" />
-    </div>
-
-    {/* Grid Pattern */}
-    <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjEiIGZpbGw9ImN1cnJlbnRDb2xvciIvPjwvZz48L3N2Zz4=')] opacity-[0.03]" />
-
-    {/* Decorative Shapes */}
-    <div className="absolute top-10 left-10 w-20 h-20 border-2 border-primary-200 rounded-lg rotate-45 animate-pulse" />
-    <div className="absolute bottom-10 right-10 w-20 h-20 border-2 border-secondary-200 rounded-full animate-pulse" />
-    <div className="absolute top-1/2 left-1/4 w-16 h-16 border-2 border-primary-100 rounded-full animate-bounce" />
-    <div className="absolute bottom-1/3 right-1/3 w-16 h-16 border-2 border-secondary-100 rotate-45 animate-bounce" />
-  </div>
-);
+import Button from '../components/common/Button';
 
 const Auth = () => {
-  const [activeTab, setActiveTab] = useState('login');
-  const location = useLocation();
   const navigate = useNavigate();
-  const { login, loading: authLoading } = useAuth();
+  const { login } = useAuth();
   const [loading, setLoading] = useState(false);
-
-  const from = location.state?.from?.pathname || '/dashboard';
-
-  // Form states
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
-  });
-  const [formErrors, setFormErrors] = useState({});
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const tab = params.get('tab');
-    if (tab === 'signup' || tab === 'login') {
-      setActiveTab(tab);
-    }
-  }, [location]);
-
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.email) {
-      errors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Invalid email address';
-    }
-    if (!formData.password) {
-      errors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      errors.password = 'Password must be at least 6 characters';
-    }
-    if (activeTab === 'signup' && !formData.name) {
-      errors.name = 'Name is required';
-    }
-    return errors;
-  };
+  const [searchParams] = useSearchParams();
+  const isSignUp = searchParams.get('tab') === 'signup';
 
   const handleAuthSuccess = async (userData) => {
     await login(userData);
-    toast.success('Successfully authenticated!');
-    navigate(from, { replace: true });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const errors = validateForm();
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
-    }
-
-    setLoading(true);
-    setFormErrors({});
-
-    try {
-      let response;
-      if (activeTab === 'login') {
-        response = await authService.login({
-          email: formData.email,
-          password: formData.password,
-        });
-      } else {
-        response = await authService.register({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        });
-      }
-
-      await handleAuthSuccess(response.user);
-    } catch (error) {
-      toast.error(error.message);
-      setFormErrors({ submit: error.message });
-    } finally {
-      setLoading(false);
-    }
+    navigate('/dashboard');
+    toast.success(`Successfully ${isSignUp ? 'signed up' : 'signed in'}!`);
   };
 
   const googleLogin = useGoogleLogin({
@@ -136,236 +41,128 @@ const Auth = () => {
 
         await handleAuthSuccess(result.user);
       } catch (error) {
-        toast.error('Failed to authenticate with Google');
+        toast.error(`Failed to ${isSignUp ? 'sign up' : 'sign in'} with Google`);
       } finally {
         setLoading(false);
       }
     },
     onError: (error) => {
       console.error('Google login failed:', error);
-      toast.error('Google login failed. Please try again.');
+      toast.error('Google authentication failed. Please try again.');
     }
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <DecorativeBackground />
-      
-      {/* Content Container */}
-      <div className="relative w-full max-w-6xl mx-auto px-4 py-16 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Left Side - Welcome Message */}
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="hidden lg:block w-1/2 pr-12"
+    <div className="pt-16 min-h-screen flex flex-col md:flex-row">
+      {/* Left Section - Hero/Branding */}
+      <div className="md:w-1/2 bg-gradient-to-br from-primary-600 to-secondary-600 p-8 flex items-center justify-center">
+        <div className="max-w-md text-white">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h1 className="text-4xl font-bold mb-4">
+              Welcome to DebateAI
+            </h1>
+            <p className="text-lg text-white/90 mb-8">
+              Enhance your debating skills with AI-powered practice sessions
+            </p>
+            
+            {/* Feature List */}
+            <ul className="space-y-4">
+              {[
+                'Practice with intelligent AI opponents',
+                'Get instant feedback on your arguments',
+                'Access diverse debate topics',
+                'Track your improvement over time'
+              ].map((feature, index) => (
+                <motion.li
+                  key={feature}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 + (index * 0.1) }}
+                  className="flex items-center space-x-2 text-white/90"
+                >
+                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>{feature}</span>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Right Section - Sign In/Sign Up */}
+      <div className="md:w-1/2 bg-gradient-to-br from-gray-50 to-white p-8 flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="w-full max-w-md space-y-8"
         >
-          <h1 className="text-5xl font-bold mb-6">
-            Welcome to{' '}
-            <span className="gradient-text">DebateAI</span>
-          </h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Join our community of debaters and enhance your skills with AI-powered practice and real-time feedback.
-          </p>
-          <div className="grid grid-cols-2 gap-6">
-            <div className="p-4 bg-white/80 backdrop-blur-sm rounded-lg">
-              <div className="text-2xl font-bold gradient-text mb-1">10k+</div>
-              <div className="text-gray-600">Active Users</div>
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              {isSignUp ? 'Create Account' : 'Welcome Back'}
+            </h2>
+            <p className="mt-2 text-gray-600">
+              {isSignUp 
+                ? 'Join our community of debaters today'
+                : 'Continue your journey to mastering debate'
+              }
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            <Button
+              onClick={() => googleLogin()}
+              disabled={loading}
+              className="w-full flex items-center justify-center space-x-3 py-4 px-4 bg-white border-2 border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 hover:border-primary-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            >
+              <img 
+                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+                alt="Google" 
+                className="w-5 h-5"
+              />
+              <span className="text-sm font-medium">
+                {loading ? 'Please wait...' : `Continue with Google`}
+              </span>
+            </Button>
+
+            {/* Terms and Privacy Notice */}
+            <div className="text-center text-sm text-gray-500 bg-gray-50 p-4 rounded-lg border border-gray-100">
+              By {isSignUp ? 'signing up' : 'signing in'}, you agree to our{' '}
+              <Link 
+                to="/terms" 
+                className="text-primary-600 hover:text-primary-700 font-medium"
+              >
+                Terms
+              </Link>
+              {' '}and{' '}
+              <Link 
+                to="/privacy-policy" 
+                className="text-primary-600 hover:text-primary-700 font-medium"
+              >
+                Privacy Policy
+              </Link>
             </div>
-            <div className="p-4 bg-white/80 backdrop-blur-sm rounded-lg">
-              <div className="text-2xl font-bold gradient-text mb-1">50k+</div>
-              <div className="text-gray-600">Debates Completed</div>
+
+            {/* Help Link */}
+            <div className="text-center">
+              <span className="text-sm text-gray-600">
+                Need help?{' '}
+                <Link 
+                  to="/contact" 
+                  className="text-primary-600 hover:text-primary-700 font-medium"
+                >
+                  Contact us
+                </Link>
+              </span>
             </div>
           </div>
         </motion.div>
-
-        {/* Right Side - Auth Form */}
-        <div className="w-full lg:w-1/2 max-w-md">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="relative w-full space-y-8 bg-white/80 backdrop-blur-lg p-8 rounded-2xl shadow-xl"
-          >
-            {/* Logo and Decorative Element */}
-            <div className="text-center relative">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg rotate-12" />
-              <div className="relative">
-                <h2 className="text-3xl font-bold gradient-text">
-                  DebateAI
-                </h2>
-                <p className="mt-2 text-gray-600">
-                  {activeTab === 'login' ? 'Welcome back!' : 'Create your account'}
-                </p>
-              </div>
-            </div>
-
-            {/* Tabs with Animation */}
-            <div className="flex border-b border-gray-200 relative">
-              <button
-                onClick={() => setActiveTab('login')}
-                className={`flex-1 py-2 text-center relative ${
-                  activeTab === 'login'
-                    ? 'text-primary-600'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                Login
-                {activeTab === 'login' && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary-600 to-secondary-600"
-                  />
-                )}
-              </button>
-              <button
-                onClick={() => setActiveTab('signup')}
-                className={`flex-1 py-2 text-center relative ${
-                  activeTab === 'signup'
-                    ? 'text-primary-600'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                Sign Up
-                {activeTab === 'signup' && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary-600 to-secondary-600"
-                  />
-                )}
-              </button>
-            </div>
-
-            {/* Form with Error Handling */}
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <AnimatePresence>
-                {formErrors.submit && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="bg-red-50 text-red-500 p-3 rounded-lg text-sm"
-                  >
-                    {formErrors.submit}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {activeTab === 'signup' && (
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                    Full Name
-                  </label>
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => {
-                      setFormData({ ...formData, name: e.target.value });
-                      setFormErrors({ ...formErrors, name: null });
-                    }}
-                    className={`mt-1 block w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
-                      formErrors.name ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                  />
-                  {formErrors.name && (
-                    <p className="mt-1 text-sm text-red-500">{formErrors.name}</p>
-                  )}
-                </div>
-              )}
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email address
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => {
-                    setFormData({ ...formData, email: e.target.value });
-                    setFormErrors({ ...formErrors, email: null });
-                  }}
-                  className={`mt-1 block w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
-                    formErrors.email ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                />
-                {formErrors.email && (
-                  <p className="mt-1 text-sm text-red-500">{formErrors.email}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  value={formData.password}
-                  onChange={(e) => {
-                    setFormData({ ...formData, password: e.target.value });
-                    setFormErrors({ ...formErrors, password: null });
-                  }}
-                  className={`mt-1 block w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
-                    formErrors.password ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                />
-                {formErrors.password && (
-                  <p className="mt-1 text-sm text-red-500">{formErrors.password}</p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                variant="primary"
-                className="w-full py-3 text-base font-medium rounded-lg"
-                disabled={loading}
-              >
-                {loading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                    Loading...
-                  </div>
-                ) : (
-                  activeTab === 'login' ? 'Login' : 'Sign Up'
-                )}
-              </Button>
-            </form>
-
-            {/* Enhanced Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 py-1 bg-white/80 text-gray-500 rounded-full border border-gray-200">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            {/* Google Login Button */}
-            <button
-              onClick={() => googleLogin()}
-              disabled={loading}
-              className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50"
-            >
-              <GoogleIcon className="h-5 w-5 mr-2" />
-              Continue with Google
-            </button>
-
-            {/* Additional Links */}
-            <div className="text-center text-sm">
-              <a href="#" className="text-primary-600 hover:text-primary-700">
-                {activeTab === 'login' ? 'Forgot your password?' : 'Already have an account?'}
-              </a>
-            </div>
-          </motion.div>
-        </div>
       </div>
     </div>
   );

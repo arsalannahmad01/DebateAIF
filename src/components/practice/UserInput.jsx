@@ -1,70 +1,54 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { MicrophoneIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
+import VoiceInput from './VoiceInput';
 
-const UserInput = ({ onSubmit }) => {
-  const [content, setContent] = useState('');
-  const [isRecording, setIsRecording] = useState(false);
-  const maxLength = 1000;
+const UserInput = ({ onSubmit, disabled, timeRemaining }) => {
+  const [inputText, setInputText] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (content.trim()) {
-      onSubmit(content);
-      setContent('');
+    if (inputText.trim() && !disabled) {
+      onSubmit(inputText);
+      setInputText('');
     }
   };
 
-  const handleVoiceInput = () => {
-    setIsRecording(!isRecording);
-    // TODO: Implement voice input functionality
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="relative">
-      {/* Character count */}
-      <div className="absolute right-20 top-3 text-sm text-gray-400">
-        {content.length}/{maxLength}
-      </div>
-
-      <div className="flex space-x-2">
+    <form onSubmit={handleSubmit} className="flex items-end gap-2">
+      <div className="flex-1">
         <textarea
-          value={content}
-          onChange={(e) => {
-            if (e.target.value.length <= maxLength) {
-              setContent(e.target.value);
-            }
-          }}
-          placeholder="Type your argument here..."
-          className="flex-1 min-h-[100px] p-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          disabled={disabled}
+          placeholder={disabled ? "Wait for your turn..." : "Type your argument..."}
+          className="w-full p-3 border rounded-lg resize-none h-24
+            focus:outline-none focus:ring-2 focus:ring-primary-500
+            disabled:bg-gray-50 disabled:cursor-not-allowed"
         />
-
-        <div className="flex flex-col space-y-2">
-          <motion.button
-            type="button"
-            onClick={handleVoiceInput}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className={`p-3 rounded-lg ${
-              isRecording
-                ? 'bg-red-100 text-red-600'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            <MicrophoneIcon className="w-6 h-6" />
-          </motion.button>
-
-          <motion.button
-            type="submit"
-            disabled={!content.trim()}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="p-3 rounded-lg bg-primary-500 text-white hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <PaperAirplaneIcon className="w-6 h-6" />
-          </motion.button>
+        <div className="mt-2 flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <VoiceInput
+              onTranscript={setInputText}
+              isEnabled={!disabled}
+            />
+          </div>
+          {timeRemaining !== undefined && (
+            <span className="text-sm text-gray-500">
+              Time remaining: {timeRemaining}s
+            </span>
+          )}
         </div>
       </div>
+      <button
+        type="submit"
+        disabled={disabled || !inputText.trim()}
+        className="px-4 py-2 bg-primary-500 text-white rounded-lg
+          hover:bg-primary-600 focus:outline-none focus:ring-2
+          focus:ring-primary-500 focus:ring-offset-2
+          disabled:bg-gray-300 disabled:cursor-not-allowed
+          h-10"
+      >
+        Send
+      </button>
     </form>
   );
 };
