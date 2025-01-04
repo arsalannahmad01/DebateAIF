@@ -1,4 +1,4 @@
-const API_URL = 'http://13.233.74.219:443/api';
+const API_URL = 'https://9daa-13-233-74-219.ngrok-free.app/api';
 // const API_URL = 'http://localhost:5001/api';
 
 
