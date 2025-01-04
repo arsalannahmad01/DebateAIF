@@ -1,4 +1,6 @@
-const API_URL = 'http://localhost:5001/api';
+const API_URL = 'https://13.233.74.219:443/api';
+// const API_URL = 'http://localhost:5001/api';
+
 
 export const contactService = {
   async submitFeedback(feedbackData) {
