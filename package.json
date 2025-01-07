@@ -8,6 +8,7 @@
     "@react-oauth/google": "^0.12.1",
     "autoprefixer": "^10.4.20",
     "cra-template": "1.2.0",
+    "date-fns": "^4.1.0",
     "framer-motion": "^11.15.0",
     "mespeak": "^2.0.2",
     "postcss": "^8.4.49",

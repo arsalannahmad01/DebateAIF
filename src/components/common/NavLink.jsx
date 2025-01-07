@@ -1,11 +1,13 @@
-const NavLink = ({ href, children }) => {
+import { Link } from 'react-router-dom';
+
+const NavLink = ({ href, children, className = '' }) => {
   return (
-    <a 
-      href={href} 
-      className="text-gray-600 hover:text-primary-600 transition-colors duration-300"
+    <Link 
+      to={href} 
+      className={className}
     >
       {children}
-    </a>
+    </Link>
   );
 };
 
