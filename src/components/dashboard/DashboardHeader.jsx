@@ -6,10 +6,7 @@ import Logo from '../common/Logo';
 import { toast } from 'react-hot-toast';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Practice', href: '/practice' },
-  // { name: 'Topics', href: '/topics' },
-  // { name: 'Analytics', href: '/analytics' },
+  { name: 'Home', href: '/' },
 ];
 
 const DashboardHeader = () => {

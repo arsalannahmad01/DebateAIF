@@ -35,7 +35,10 @@ const features = [
 
 const FeaturesSection = () => {
   return (
-    <section className="py-20 relative overflow-hidden bg-gray-900">
+    <section 
+      id="features" 
+      className="py-20 relative overflow-hidden bg-gray-900 scroll-mt-16"
+    >
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1557426272-fc759fdf7a8d?auto=format&fit=crop')] bg-cover bg-fixed bg-center opacity-5" />
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900/95 to-primary-900/95" />

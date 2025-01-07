@@ -3,7 +3,7 @@ const API_URL = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_A
 export const contactService = {
   async sendMessage(messageData) {
     try {
-      const response = await fetch(`${API_URL}/contact`, {
+      const response = await fetch(`${API_URL}/feedback`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
