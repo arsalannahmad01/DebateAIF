@@ -336,7 +336,15 @@ const topics = [
     "description": "Debate the role of religion in modern society and its influence on politics and culture",
     "category": "Religion",
     "icon": "⛪"
+  },
+  {
+    "id": 48,
+    "name": "Politics",
+    "description": "Debate the influence of politics on society, governance, and global relations",
+    "category": "Politics",
+    "icon": "🏛️"
   }
+  
 ];
 
 const durations = [
@@ -410,133 +418,145 @@ const DebateSetup = () => {
 
   const handleStart = async () => {
     if (!debateTitle || !selectedTopic || !selectedDuration || !selectedTurnDuration || !aiStance) {
-      toast.error('Please fill in all fields before starting');
+      toast.error('Please fill in all fields');
       return;
     }
 
-    // Store debate setup data in localStorage
-    const debateSetupData = {
-      name: debateTitle,
-      topic: selectedTopic.name,
-      totalDuration: selectedDuration.seconds,
-      turnDuration: selectedTurnDuration.seconds,
-      aiStance
-    };
-    
-    localStorage.setItem('debateSetupData', JSON.stringify(debateSetupData));
-    
-    // Navigate to practice page
-    navigate('/practice');
+    setIsLoading(true);
+
+    try {
+      const setupData = {
+        title: debateTitle,
+        topic: selectedTopic.name,
+        description: selectedTopic.description,
+        category: selectedTopic.category,
+        totalDuration: selectedDuration.seconds,
+        turnDuration: selectedTurnDuration.seconds,
+        aiStance: aiStance
+      };
+
+      localStorage.setItem('debateSetupData', JSON.stringify(setupData));
+      navigate('/practice');
+    } catch (error) {
+      console.error('Failed to start debate:', error);
+      toast.error('Failed to start debate');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const TopicSelection = () => (
-    <div className="mb-12">
-      <h2 className="text-xl font-semibold text-white mb-6 flex items-center">
-        <span className="p-2 bg-primary-500/10 rounded-lg mr-3">
-          <AcademicCapIcon className="w-6 h-6 text-primary-400" />
-        </span>
-        Choose Topic
-      </h2>
-      <Combobox value={selectedTopic} onChange={setSelectedTopic}>
-        <div className="relative">
-          <div className="relative w-full">
-            <Combobox.Input
-              className="w-full px-4 py-3 rounded-xl bg-gray-800/30 border border-gray-700/50 text-white 
-                       placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50
-                       transition-all duration-300"
-              displayValue={(topic) => topic?.name || ''}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                if (event.target.value !== selectedTopic?.name) {
-                  setSelectedTopic(null);
-                }
-              }}
-              placeholder="Search for a topic..."
-            />
-            <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-4">
-              <ChevronUpDownIcon
-                className="h-5 w-5 text-gray-400"
-                aria-hidden="true"
+  const TopicSelection = () => {
+    const [query, setQuery] = useState('');
+
+    const filteredTopics = query === ''
+      ? topics
+      : topics.filter((topic) => {
+          const searchStr = `${topic.name} ${topic.description} ${topic.category}`.toLowerCase();
+          return searchStr.includes(query.toLowerCase());
+        });
+
+    return (
+      <div className="mb-12">
+        <h2 className="text-xl font-semibold text-white mb-6 flex items-center">
+          <span className="p-2 bg-primary-500/10 rounded-lg mr-3">
+            <AcademicCapIcon className="w-6 h-6 text-primary-400" />
+          </span>
+          Topic
+        </h2>
+        <Combobox value={selectedTopic} onChange={setSelectedTopic}>
+          <div className="relative">
+            <div className="relative w-full">
+              <Combobox.Input
+                className="w-full px-4 py-3 rounded-xl bg-gray-800/30 border border-gray-700/50 text-white 
+                         placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50
+                         transition-all duration-300"
+                displayValue={(topic) => topic?.name}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search for a topic..."
               />
-            </Combobox.Button>
-          </div>
-          <Transition
-            as={Fragment}
-            leave="transition ease-in duration-100"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-            afterLeave={() => setQuery('')}
-          >
-            <Combobox.Options 
-              className="absolute mt-2 max-h-60 w-full overflow-auto rounded-xl bg-gray-800 
-                         border border-gray-700/50 py-2 shadow-lg ring-1 ring-black/5 focus:outline-none z-50"
+              <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+                <ChevronUpDownIcon
+                  className="h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
+              </Combobox.Button>
+            </div>
+            <Transition
+              as={Fragment}
+              leave="transition ease-in duration-100"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+              afterLeave={() => setQuery('')}
             >
-              {filteredTopics.length === 0 && query !== '' ? (
-                <div className="relative cursor-default select-none px-4 py-2 text-gray-400">
-                  No topics found.
-                </div>
-              ) : (
-                filteredTopics.map((topic) => (
-                  <Combobox.Option
-                    key={topic.id}
-                    className={({ active }) =>
-                      `relative cursor-pointer select-none py-3 pl-10 pr-4 ${
-                        active ? 'bg-primary-500/30 text-white' : 'text-gray-400'
-                      }`
-                    }
-                    value={topic}
-                  >
-                    {({ selected, active }) => (
-                      <>
-                        <div className="flex items-center">
-                          <span className="text-xl mr-3">{topic.icon}</span>
-                          <div>
-                            <span className={`block truncate ${selected ? 'font-medium text-white' : ''}`}>
-                              {topic.name}
-                            </span>
-                            <span className={`block truncate text-sm ${
-                              active ? 'text-gray-200' : 'text-gray-500'
-                            }`}>
-                              {topic.category} • {topic.description}
-                            </span>
+              <Combobox.Options 
+                className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-xl 
+                             bg-gray-800 border border-gray-700/50 
+                             py-1 text-base shadow-lg focus:outline-none sm:text-sm"
+              >
+                {filteredTopics.length === 0 && query !== '' ? (
+                  <div className="relative cursor-default select-none px-4 py-2 text-gray-400">
+                    Nothing found.
+                  </div>
+                ) : (
+                  filteredTopics.map((topic) => (
+                    <Combobox.Option
+                      key={topic.id}
+                      className={({ active }) =>
+                        `relative cursor-pointer select-none py-3 pl-10 pr-4 ${
+                          active ? 'bg-primary-500 text-white z-40' : 'text-gray-300'
+                        }`
+                      }
+                      value={topic}
+                    >
+                      {({ selected, active }) => (
+                        <>
+                          <div className="flex items-center">
+                            <span className="mr-3">{topic.icon}</span>
+                            <div>
+                              <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
+                                {topic.name}
+                              </span>
+                              <span className={`block truncate text-sm ${
+                                active ? 'text-gray-200' : 'text-gray-500'
+                              }`}>
+                                {topic.description}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        {selected ? (
-                          <span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                            active ? 'text-white' : 'text-primary-400'
-                          }`}>
-                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                          </span>
-                        ) : null}
-                      </>
-                    )}
-                  </Combobox.Option>
-                ))
-              )}
-            </Combobox.Options>
-          </Transition>
-        </div>
-      </Combobox>
-      {selectedTopic && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-4 p-4 rounded-xl bg-primary-500/10 border border-primary-500/20"
-        >
-          <div className="flex items-start">
-            <span className="text-2xl mr-3">{selectedTopic.icon}</span>
-            <div>
-              <h3 className="text-white font-medium mb-1">{selectedTopic.name}</h3>
-              <p className="text-sm text-gray-400">{selectedTopic.description}</p>
-              <span className="inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium bg-primary-500/20 text-primary-300">
+                          {selected ? (
+                            <span
+                              className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                                active ? 'text-white' : 'text-primary-400'
+                              }`}
+                            >
+                              <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                            </span>
+                          ) : null}
+                        </>
+                      )}
+                    </Combobox.Option>
+                  ))
+                )}
+              </Combobox.Options>
+            </Transition>
+          </div>
+        </Combobox>
+        {selectedTopic && (
+          <div className="mt-4 p-4 rounded-xl bg-gray-800/30 border border-gray-700/50">
+            <div className="flex items-center gap-2 text-gray-300 mb-2">
+              <span className="text-2xl">{selectedTopic.icon}</span>
+              <span className="text-sm px-2 py-1 rounded-lg bg-gray-700/50">
                 {selectedTopic.category}
               </span>
             </div>
+            <p className="text-gray-400 text-sm">
+              {selectedTopic.description}
+            </p>
           </div>
-        </motion.div>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  };
 
   const renderTurnDurationSection = () => {
     if (!selectedDuration) return null;
@@ -664,10 +684,10 @@ const DebateSetup = () => {
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-secondary-500/10 to-primary-500/10 
                                   opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="relative z-10">
+                    <div className="relative -z-10">
                       <div className="text-lg font-medium">{duration.label}</div>
                       <div className="text-sm text-gray-400">{duration.description}</div>
-                    </div>
+              </div>
                   </motion.button>
                 ))}
               </div>
@@ -700,10 +720,10 @@ const DebateSetup = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleStart}
-              disabled={!debateTitle || !selectedTopic || !selectedDuration || !selectedTurnDuration || !aiStance || isLoading}
+              disabled={isLoading}
               className={`w-full py-5 rounded-xl text-lg font-medium transition-all duration-300 relative group overflow-hidden
                 ${
-                  !debateTitle || !selectedTopic || !selectedDuration || !selectedTurnDuration || !aiStance
+                  !debateTitle || !selectedTopic || !selectedDuration || !selectedTurnDuration || !aiStance || isLoading
                     ? 'bg-gray-800/50 text-gray-500 cursor-not-allowed'
                     : 'bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white shadow-xl shadow-primary-500/20'
                 }`}

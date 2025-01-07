@@ -1,5 +1,4 @@
-// const API_URL = 'https://9daa-13-233-74-219.ngrok-free.app/api';
-const API_URL = 'http://localhost:5001/api';
+const API_URL = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_URL_LOCAL : process.env.REACT_APP_API_URL;
 
 export const authService = {
   async login(credentials) {
@@ -34,20 +33,26 @@ export const authService = {
     return response.json();
   },
 
-  async googleAuth(authData) {
-    const response = await fetch(`${API_URL}/auth/google`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(authData),
-    });
+  async googleAuth(data) {
+    try {
+      const response = await fetch(`${API_URL}/auth/google`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(data)
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Google authentication failed');
+      if (!response.ok) {
+        throw new Error('Google authentication failed');
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error('Google auth error:', error);
+      throw error;
     }
-
-    return response.json();
   },
 
   async checkAuth() {

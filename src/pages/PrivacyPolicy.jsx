@@ -117,10 +117,10 @@ const PrivacyPolicy = () => {
                 If you have any questions about this Privacy Policy or our data practices, please 
                 contact us at{' '}
                 <a 
-                  href="mailto:ghazi@edgescale.tech" 
+                  href="mailto:call.arsalan11@gmail.com" 
                   className="text-primary-600 hover:text-primary-700 font-medium"
                 >
-                  ghazi@edgescale.tech
+                  call.arsalan11@gmail.com
                 </a>
               </p>
             </section>

@@ -1,5 +1,4 @@
-// const API_URL = 'https://9daa-13-233-74-219.ngrok-free.app/api';
-const API_URL = 'http://localhost:5001/api';
+const API_URL = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_URL_LOCAL : process.env.REACT_APP_API_URL;
 
 export const debateService = {
   async initiateDebate(debateData) {
@@ -11,7 +10,7 @@ export const debateService = {
         },
         credentials: 'include',
         body: JSON.stringify({
-          title: debateData.name,
+          title: debateData.title,
           topic: debateData.topic,
           aiStance: debateData.aiStance,
           duration: Math.floor(debateData.totalDuration / 60),
@@ -111,36 +110,6 @@ export const debateService = {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to save AI response');
-    }
-
-    return response.json();
-  },
-
-  async completeDebate(debateId) {
-    const response = await fetch(`${API_URL}/debates/${debateId}/complete`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to complete debate');
-    }
-
-    return response.json();
-  },
-
-  async getFeedback(debateId) {
-    const response = await fetch(`${API_URL}/debates/${debateId}/feedback`, {
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to get feedback');
     }
 
     return response.json();

@@ -31,47 +31,26 @@ const FeedbackList = ({ title, items, icon: Icon }) => (
   </div>
 );
 
-const ScoreModal = ({ isOpen, onClose, debateId }) => {
+const ScoreModal = ({ isOpen, onClose, debateId, isLoading }) => {
   const [scores, setScores] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchScores = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
+    const fetchScoresAndFeedback = async () => {
+      if (!debateId || !isOpen) return;
 
-        // First complete the debate
-        // await debateService.completeDebate(debateId);
-        
-        // Then get scores and feedback
-        const response = await debateService.getDebateScores(debateId);
-        setScores(response.data);
-        
-        // Finally update the debate with the scores
-        await debateService.updateDebateScores(debateId, {
-          score: response.data.overallScore,
-          feedback: {
-            logicScore: response.data.feedback.logicScore,
-            persuasionScore: response.data.feedback.persuasionScore,
-            structureScore: response.data.feedback.structureScore,
-            comments: response.data.feedback.comments,
-            improvements: response.data.feedback.improvements
-          }
-        });
+      try {
+        const scoresData = await debateService.getDebateScores(debateId);
+
+        setScores(scoresData.data);
       } catch (error) {
-        setError(error.message);
-        toast.error(error.message);
-      } finally {
-        setIsLoading(false);
+        console.error('Failed to fetch debate results:', error);
+        setError('Failed to load debate results');
       }
     };
 
-    if (isOpen && debateId) {
-      fetchScores();
-    }
-  }, [isOpen, debateId]);
+    fetchScoresAndFeedback();
+  }, [debateId, isOpen]);
 
   return (
     <Transition appear show={isOpen} as={Fragment}>

@@ -22,6 +22,8 @@ const Practice = () => {
   const [turnTimeLeft, setTurnTimeLeft] = useState(null);
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [isLastTurn, setIsLastTurn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const isSubmittingRef = useRef(false);
 
   useEffect(() => {
     const initializeDebate = async () => {
@@ -136,28 +138,46 @@ const Practice = () => {
     }
   }, [aiResponse]);
 
-  const handleUserInput = async (content) => {
+  const handleUserInput = async (input) => {
+    if (isSubmittingRef.current) return;
+    
     try {
-      setIsUserTurn(false);
-      setIsAIResponding(true);
-      setMessages(prev => [...prev, { type: 'user', content }]);
-      
-      await debateService.saveUserArgument(debateIdRef.current, content);
+      isSubmittingRef.current = true;
+      setIsLoading(true);
+
+      // Save user's argument
+      await debateService.saveUserArgument(debateId, input);
+      setMessages(prev => [...prev, { type: 'user', content: input }]);
+      setUserInput('');
 
       if (isLastTurn) {
-        setShowScoreModal(true);
-        setIsAIResponding(false);
+        try {
+          // Show score modal
+          setShowScoreModal(true);
+        } catch (error) {
+          console.error('Failed to complete debate:', error);
+          toast.error('Failed to get debate results');
+        }
       } else {
-        const aiReader = await debateService.getAIResponse(debateIdRef.current, { content });
-        if (aiReader) {
-          handleAIStream(aiReader);
+        // If not last turn, continue with AI response
+        setIsUserTurn(false);
+        setIsAIResponding(true);
+
+        const reader = await debateService.getAIResponse(debateId, { content: input });
+        if (reader) {
+          handleAIStream(reader);
+        } else {
+          throw new Error('No stream available from response');
         }
       }
     } catch (error) {
-      console.error('Error handling user input:', error);
-      toast.error('Failed to send your response');
+      console.error('Failed to send user input:', error);
+      toast.error('Failed to send your message');
+      setIsUserTurn(true);
       setIsAIResponding(false);
-      setIsUserTurn(!isLastTurn);
+    } finally {
+      setIsLoading(false);
+      isSubmittingRef.current = false;
     }
   };
 
@@ -165,20 +185,22 @@ const Practice = () => {
     console.log("Debate ID state updated:", debateId);
   }, [debateId]);
 
-  const handleTotalTimeUp = () => {
-    toast.success('Debate time is up!');
-    debateService.completeDebate(debateId);
-    navigate('/dashboard');
-  };
-
   const handleTurnTimeUp = () => {
+    if (isSubmittingRef.current) return;
+
     if (isLastTurn) {
-      setShowScoreModal(true);
       if (userInput.trim()) {
         handleUserInput(userInput);
+      } else {
+        handleUserInput("No Arguments");
       }
-    } else if (userInput.trim()) {
-      handleUserInput(userInput);
+    } else if (isUserTurn) {
+      if (userInput.trim()) {
+        handleUserInput(userInput);
+      } else {
+        setUserInput("No Arguments");
+        handleUserInput("No Arguments");
+      }
     }
   };
 
@@ -241,6 +263,7 @@ const Practice = () => {
                 isCountdown={true}
                 onTimeUp={handleTurnTimeUp}
                 label="Time"
+                isActive={isUserTurn}
               />
             )}
           </div>
@@ -286,6 +309,7 @@ const Practice = () => {
                 isCountdown={true}
                 onTimeUp={handleTurnTimeUp}
                 label="Time"
+                isActive={isUserTurn}
               />
             )}
           </div>
@@ -319,6 +343,7 @@ const Practice = () => {
           navigate('/dashboard');
         }}
         debateId={debateId}
+        isLoading={isLoading}
       />
     </div>
   );
