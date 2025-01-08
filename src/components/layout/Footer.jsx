@@ -8,7 +8,7 @@ const footerLinks = [
     links: [
       { name: 'Features', href: '/features' },
       { name: 'Pricing', href: '/pricing' },
-      { name: 'FAQ', href: '/faq' },
+      // { name: 'FAQ', href: '/faq' },
     ]
   },
   {
@@ -16,7 +16,7 @@ const footerLinks = [
     links: [
       { name: 'About', href: '/about' },
       { name: 'Contact', href: '/contact' },
-      { name: 'Blog', href: '/blog' },
+      // { name: 'Blog', href: '/blog' },
     ]
   },
   {
@@ -24,7 +24,7 @@ const footerLinks = [
     links: [
       { name: 'Privacy', href: '/privacy-policy' },
       { name: 'Terms', href: '/terms' },
-      { name: 'Security', href: '/security' },
+      // { name: 'Security', href: '/security' },
     ]
   }
 ];

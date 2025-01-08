@@ -1,84 +1,114 @@
 import { motion } from 'framer-motion';
+import { 
+  UserGroupIcon, 
+  LightBulbIcon, 
+  SparklesIcon,
+  ChatBubbleBottomCenterTextIcon 
+} from '@heroicons/react/24/outline';
 
 const About = () => {
+  const features = [
+    {
+      icon: SparklesIcon,
+      title: "AI-Powered Innovation",
+      description: "Leveraging cutting-edge artificial intelligence to provide dynamic and adaptive debate practice experiences."
+    },
+    {
+      icon: UserGroupIcon,
+      title: "Inclusive Learning",
+      description: "Making debate practice accessible to everyone, from students to professionals, anywhere in the world."
+    },
+    {
+      icon: LightBulbIcon,
+      title: "Skill Development",
+      description: "Focused on developing critical thinking, argumentation, and persuasion skills through structured practice."
+    },
+    {
+      icon: ChatBubbleBottomCenterTextIcon,
+      title: "Real-time Feedback",
+      description: "Providing instant, detailed feedback to help users improve their debating techniques continuously."
+    }
+  ];
+
   return (
-    <div className="min-h-screen pt-20 pb-12 bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            About Us
-          </h1>
-          <p className="text-lg text-gray-600">
-            Transforming debate practice through AI innovation
-          </p>
-        </motion.div>
+    <div className="min-h-screen bg-gray-900">
+      {/* Hero Section */}
+      <div className="relative pt-32 pb-20 overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-secondary-500/20 backdrop-blur-3xl" />
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
+          >
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+              About <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400">DebateAI</span>
+            </h1>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Transforming debate practice through AI innovation and making quality debate training accessible to everyone.
+            </p>
+          </motion.div>
+        </div>
+      </div>
 
-        {/* Main Content */}
-        <motion.div 
+      {/* Features Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {features.map((feature, index) => (
+            <motion.div
+              key={feature.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="relative group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r rounded-xl p-[2px]"
+                   style={{ background: `linear-gradient(45deg, #${Math.floor(Math.random()*16777215).toString(16)}, #${Math.floor(Math.random()*16777215).toString(16)})` }}>
+                <div className="h-full w-full bg-gray-900 rounded-[10px]" />
+              </div>
+
+              <div className="relative bg-gray-800/50 backdrop-blur-xl p-8 rounded-xl border border-gray-700/50 
+                            hover:border-primary-500/50 transition-all duration-300">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="p-2 bg-primary-500/10 rounded-lg">
+                    <feature.icon className="w-6 h-6 text-primary-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-white">{feature.title}</h3>
+                </div>
+                <p className="text-gray-400">{feature.description}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Mission Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="prose prose-lg max-w-none"
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="bg-gray-800/50 backdrop-blur-xl rounded-2xl border border-gray-700/50 p-8 md:p-12"
         >
-          <div className="bg-white rounded-xl shadow-sm p-8 space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Our Mission</h2>
-            <p>
+          <h2 className="text-3xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400">
+            Our Mission
+          </h2>
+          <div className="prose prose-lg prose-invert max-w-none">
+            <p className="text-gray-300">
               At DebateAI, we believe that the art of debate is more crucial than ever in today's world. 
-              Our mission is to make debate practice accessible to everyone, regardless of their location, 
-              schedule, or experience level. We're committed to helping individuals develop critical thinking 
-              skills, articulate their thoughts clearly, and engage in constructive dialogue.
+              Our mission is to democratize access to high-quality debate practice, enabling individuals 
+              to develop their critical thinking and argumentation skills regardless of their location or resources.
             </p>
-
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">What Sets Us Apart</h2>
-            <ul className="list-disc pl-6 space-y-3">
-              <li>
-                <strong>Personalized Learning:</strong> Our AI adapts to your skill level, providing 
-                increasingly challenging debates as you improve.
-              </li>
-              <li>
-                <strong>Immediate Feedback:</strong> Receive detailed analysis of your arguments, 
-                logical reasoning, and persuasion techniques after each debate.
-              </li>
-              <li>
-                <strong>Flexible Practice:</strong> Practice any time, anywhere, with debates 
-                spanning various topics and formats.
-              </li>
-              <li>
-                <strong>Safe Learning Environment:</strong> Experiment with different debate styles 
-                and arguments without the pressure of public speaking.
-              </li>
-            </ul>
-
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Looking Forward</h2>
-            <p>
-              As we continue to grow, we're excited about the possibilities ahead. We're constantly 
-              working on improving our AI's capabilities, expanding our topic database, and developing 
-              new features to enhance the learning experience. Our goal is to create a global community 
-              of skilled debaters who can engage in meaningful discussions and contribute to public 
-              discourse in a constructive way.
+            <p className="text-gray-300">
+              Through our AI-powered platform, we're creating an environment where users can practice 
+              debate techniques, receive instant feedback, and track their progress over time. We're 
+              committed to fostering a community of skilled debaters who can engage in constructive 
+              dialogue and contribute meaningfully to public discourse.
             </p>
-
-            <p>
-              Whether you're a student preparing for debate competitions, a professional looking to 
-              improve your argumentation skills, or simply someone interested in engaging in thoughtful 
-              discussions, DebateAI is here to help you grow. Join us in our mission to make the art 
-              of debate accessible to everyone.
-            </p>
-
-            <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-              <blockquote className="italic text-gray-700">
-                "The true art of debate lies not in winning arguments, but in the pursuit of truth 
-                through reasoned discussion. That's the principle that guides everything we do at DebateAI."
-              </blockquote>
-              <p className="mt-2 text-sm text-gray-600">
-                - The DebateAI Team
-              </p>
-            </div>
           </div>
         </motion.div>
       </div>
