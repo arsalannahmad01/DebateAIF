@@ -13,6 +13,7 @@ import { debateService } from '../../services/debateService';
 import toast from 'react-hot-toast';
 import { Combobox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import SEO from '../common/SEO';
 
 const topics = [
   {
@@ -603,141 +604,154 @@ const DebateSetup = () => {
   }, [selectedDuration]);
 
   return (
-    <div className="min-h-screen bg-gray-900 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-900/20 to-secondary-900/20" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary-900/20 via-gray-900 to-gray-900" />
+    <>
+      <SEO 
+        title="Setup Practice Session"
+        description="Configure your debate practice session with AI. Choose topics, duration, and difficulty."
+        keywords={[
+          'debate setup',
+          'practice configuration',
+          'debate settings',
+          'AI opponent',
+          'debate preparation'
+        ]}
+      />
+      <div className="min-h-screen bg-gray-900 relative overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-900/20 to-secondary-900/20" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary-900/20 via-gray-900 to-gray-900" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <motion.button
-            whileHover={{ scale: 1.05, x: -5 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/dashboard')}
-            className="text-gray-400 hover:text-white flex items-center group"
-          >
-            <ArrowLeftIcon className="w-5 h-5 mr-2 transition-transform group-hover:-translate-x-1" />
-            Back to Dashboard
-          </motion.button>
-          <SparklesIcon className="w-6 h-6 text-primary-400" />
-        </div>
-
-        {/* Main Content */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gray-800/40 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-700/50 p-8 relative overflow-hidden"
-        >
-          {/* Gradient Border Effect */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-secondary-500/10 to-transparent" />
-
-          <div className="relative">
-            <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400 mb-2">
-              Setup Your Debate
-            </h1>
-            <p className="text-gray-400 mb-12">Customize your practice session to match your preferences</p>
-
-            {/* Debate Title Input */}
-            <div className="mb-12">
-              <h2 className="text-xl font-semibold text-white mb-6 flex items-center">
-                <span className="p-2 bg-primary-500/10 rounded-lg mr-3">
-                  <PencilSquareIcon className="w-6 h-6 text-primary-400" />
-                </span>
-                Debate Title
-              </h2>
-              <input
-                type="text"
-                value={debateTitle}
-                onChange={(e) => setDebateTitle(e.target.value)}
-                placeholder="Enter a title for your debate"
-                className="w-full px-4 py-3 rounded-xl bg-gray-800/30 border border-gray-700/50 text-white 
-                         placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50
-                         transition-all duration-300"
-              />
-            </div>
-
-            {/* Topic Selection */}
-            <TopicSelection />
-
-            {/* Total Duration Selection */}
-            <div className="mb-12">
-              <h2 className="text-xl font-semibold text-white mb-6 flex items-center">
-                <span className="p-2 bg-secondary-500/10 rounded-lg mr-3">
-                  <ClockIcon className="w-6 h-6 text-secondary-400" />
-                </span>
-                Total Duration
-              </h2>
-              <div className="flex flex-wrap gap-4">
-                {durations.map((duration) => (
-                  <motion.button
-                    key={duration.id}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setSelectedDuration(duration)}
-                    className={`px-8 py-4 rounded-xl transition-all duration-300 relative group overflow-hidden
-                      ${
-                        selectedDuration?.id === duration.id
-                          ? 'bg-secondary-500/20 border-secondary-500/50 text-white shadow-lg shadow-secondary-500/20'
-                          : 'bg-gray-800/30 border-gray-700/50 text-gray-400 hover:text-white'
-                      } border`}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-secondary-500/10 to-primary-500/10 
-                                  opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="relative -z-10">
-                      <div className="text-lg font-medium">{duration.label}</div>
-                      <div className="text-sm text-gray-400">{duration.description}</div>
-              </div>
-                  </motion.button>
-                ))}
-              </div>
-            </div>
-
-            {/* Turn Duration Selection */}
-            {renderTurnDurationSection()}
-
-            {/* AI Stance Input */}
-            <div className="mb-12">
-              <h2 className="text-xl font-semibold text-white mb-6 flex items-center">
-                <span className="p-2 bg-secondary-500/10 rounded-lg mr-3">
-                  <ChatBubbleBottomCenterTextIcon className="w-6 h-6 text-secondary-400" />
-                </span>
-                AI Stance
-              </h2>
-              <textarea
-                value={aiStance}
-                onChange={(e) => setAiStance(e.target.value)}
-                placeholder="Describe the position that AI should take in this debate..."
-                rows={4}
-                className="w-full px-4 py-3 rounded-xl bg-gray-800/30 border border-gray-700/50 text-white 
-                         placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-secondary-500/50
-                         transition-all duration-300 resize-none"
-              />
-            </div>
-
-            {/* Start Button */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleStart}
-              disabled={isLoading}
-              className={`w-full py-5 rounded-xl text-lg font-medium transition-all duration-300 relative group overflow-hidden
-                ${
-                  !debateTitle || !selectedTopic || !selectedDuration || !selectedTurnDuration || !aiStance || isLoading
-                    ? 'bg-gray-800/50 text-gray-500 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white shadow-xl shadow-primary-500/20'
-                }`}
+              whileHover={{ scale: 1.05, x: -5 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/dashboard')}
+              className="text-gray-400 hover:text-white flex items-center group"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent 
-                            opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-              <span className="relative z-10">
-                {isLoading ? 'Setting up your debate...' : 'Start Debate'}
-              </span>
+              <ArrowLeftIcon className="w-5 h-5 mr-2 transition-transform group-hover:-translate-x-1" />
+              Back to Dashboard
             </motion.button>
+            <SparklesIcon className="w-6 h-6 text-primary-400" />
           </div>
-        </motion.div>
+
+          {/* Main Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gray-800/40 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-700/50 p-8 relative overflow-hidden"
+          >
+            {/* Gradient Border Effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-secondary-500/10 to-transparent" />
+
+            <div className="relative">
+              <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400 mb-2">
+                Setup Your Debate
+              </h1>
+              <p className="text-gray-400 mb-12">Customize your practice session to match your preferences</p>
+
+              {/* Debate Title Input */}
+              <div className="mb-12">
+                <h2 className="text-xl font-semibold text-white mb-6 flex items-center">
+                  <span className="p-2 bg-primary-500/10 rounded-lg mr-3">
+                    <PencilSquareIcon className="w-6 h-6 text-primary-400" />
+                  </span>
+                  Debate Title
+                </h2>
+                <input
+                  type="text"
+                  value={debateTitle}
+                  onChange={(e) => setDebateTitle(e.target.value)}
+                  placeholder="Enter a title for your debate"
+                  className="w-full px-4 py-3 rounded-xl bg-gray-800/30 border border-gray-700/50 text-white 
+                           placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50
+                           transition-all duration-300"
+                />
+              </div>
+
+              {/* Topic Selection */}
+              <TopicSelection />
+
+              {/* Total Duration Selection */}
+              <div className="mb-12">
+                <h2 className="text-xl font-semibold text-white mb-6 flex items-center">
+                  <span className="p-2 bg-secondary-500/10 rounded-lg mr-3">
+                    <ClockIcon className="w-6 h-6 text-secondary-400" />
+                  </span>
+                  Total Duration
+                </h2>
+                <div className="flex flex-wrap gap-4">
+                  {durations.map((duration) => (
+                    <motion.button
+                      key={duration.id}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setSelectedDuration(duration)}
+                      className={`px-8 py-4 rounded-xl transition-all duration-300 relative group overflow-hidden
+                        ${
+                          selectedDuration?.id === duration.id
+                            ? 'bg-secondary-500/20 border-secondary-500/50 text-white shadow-lg shadow-secondary-500/20'
+                            : 'bg-gray-800/30 border-gray-700/50 text-gray-400 hover:text-white'
+                        } border`}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-secondary-500/10 to-primary-500/10 
+                                    opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="relative -z-10">
+                        <div className="text-lg font-medium">{duration.label}</div>
+                        <div className="text-sm text-gray-400">{duration.description}</div>
+              </div>
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Turn Duration Selection */}
+              {renderTurnDurationSection()}
+
+              {/* AI Stance Input */}
+              <div className="mb-12">
+                <h2 className="text-xl font-semibold text-white mb-6 flex items-center">
+                  <span className="p-2 bg-secondary-500/10 rounded-lg mr-3">
+                    <ChatBubbleBottomCenterTextIcon className="w-6 h-6 text-secondary-400" />
+                  </span>
+                  AI Stance
+                </h2>
+                <textarea
+                  value={aiStance}
+                  onChange={(e) => setAiStance(e.target.value)}
+                  placeholder="Describe the position that AI should take in this debate..."
+                  rows={4}
+                  className="w-full px-4 py-3 rounded-xl bg-gray-800/30 border border-gray-700/50 text-white 
+                           placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-secondary-500/50
+                           transition-all duration-300 resize-none"
+                />
+              </div>
+
+              {/* Start Button */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleStart}
+                disabled={isLoading}
+                className={`w-full py-5 rounded-xl text-lg font-medium transition-all duration-300 relative group overflow-hidden
+                  ${
+                    !debateTitle || !selectedTopic || !selectedDuration || !selectedTurnDuration || !aiStance || isLoading
+                      ? 'bg-gray-800/50 text-gray-500 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white shadow-xl shadow-primary-500/20'
+                  }`}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent 
+                              opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+                <span className="relative z-10">
+                  {isLoading ? 'Setting up your debate...' : 'Start Debate'}
+                </span>
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

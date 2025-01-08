@@ -6,6 +6,7 @@ import { ArrowLeftIcon, UserIcon, ComputerDesktopIcon } from '@heroicons/react/2
 import DebateInput from '../components/practice/DebateInput';
 import Timer from '../components/practice/Timer';
 import ScoreModal from '../components/practice/ScoreModal';
+import SEO from '../components/common/SEO';
 
 const Practice = () => {
   const navigate = useNavigate();
@@ -221,131 +222,145 @@ const Practice = () => {
   }, [messages.length]);
 
   return (
-    <div className="min-h-screen h-screen bg-gray-900 flex flex-col">
-      <header className="bg-gray-900/80 backdrop-blur-xl border-b border-gray-800 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="text-gray-400 hover:text-white flex items-center gap-2 transition-colors"
-            >
-              <ArrowLeftIcon className="w-5 h-5" />
-              Back to Dashboard
-            </button>
+    <>
+      <SEO 
+        title="Practice Session"
+        description="Engage in real-time debate practice with our AI opponent. Get instant feedback and improve your argumentation skills."
+        keywords={[
+          'debate practice',
+          'live debate',
+          'AI opponent',
+          'debate feedback',
+          'real-time practice'
+        ]}
+        ogType="article"
+      />
+      <div className="min-h-screen h-screen bg-gray-900 flex flex-col">
+        <header className="bg-gray-900/80 backdrop-blur-xl border-b border-gray-800 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="text-gray-400 hover:text-white flex items-center gap-2 transition-colors"
+              >
+                <ArrowLeftIcon className="w-5 h-5" />
+                Back to Dashboard
+              </button>
 
-            {totalTimeLeft && (
-              <Timer 
-                seconds={totalTimeLeft}
-                isCountdown={false}
-                label="Debate Time"
-              />
-            )}
+              {totalTimeLeft && (
+                <Timer 
+                  seconds={totalTimeLeft}
+                  isCountdown={false}
+                  label="Debate Time"
+                />
+              )}
 
-            {debateData && (
-              <div className="text-white font-medium">
-                {debateData.name}
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-
-      <div className="flex-1 flex h-[calc(100vh-4rem)]">
-        <div className="w-1/2 border-r border-gray-800 p-6 flex flex-col h-full">
-          <div className="flex items-center justify-between gap-3 mb-4">
-            <div className="flex items-center gap-3">
-              <ComputerDesktopIcon className="w-6 h-6 text-primary-400" />
-              <h2 className="text-lg font-semibold text-white">AI's Stance</h2>
-            </div>
-            {!isUserTurn && turnTimeLeft && (
-              <Timer 
-                seconds={turnTimeLeft}
-                isCountdown={true}
-                onTimeUp={handleTurnTimeUp}
-                label="Time"
-                isActive={isUserTurn}
-              />
-            )}
-          </div>
-          
-          <div className="flex-1 bg-gray-800/40 backdrop-blur-xl rounded-xl border border-gray-700/50 flex flex-col max-h-[calc(100vh-10rem)]">
-            <div 
-              ref={aiResponseRef}
-              className="flex-1 p-6 overflow-y-auto scrollbar-custom h-full"
-            >
-              {messages.map((msg, index) => (
-                msg.type === 'ai' && (
-                  <div key={index} className="mb-4 text-white whitespace-pre-wrap font-mono">
-                    {msg.content}
-                    <div className="border-b border-gray-700/50 my-4" />
-                  </div>
-                )
-              ))}
-              {aiResponse && (
-                <div className="text-white whitespace-pre-wrap font-mono">
-                  {aiResponse}
+              {debateData && (
+                <div className="text-white font-medium">
+                  {debateData.name}
                 </div>
               )}
             </div>
           </div>
-        </div>
+        </header>
 
-        <div className="w-1/2 p-6 flex flex-col h-full">
-          <div className="flex items-center justify-between gap-3 mb-4">
-            <div className="flex items-center gap-3">
-              <UserIcon className="w-6 h-6 text-secondary-400" />
-              <h2 className="text-lg font-semibold text-white">
-                Your Response
-                {isLastTurn && (
-                  <span className="ml-2 text-sm text-red-500 font-normal">
-                    (Final Turn)
-                  </span>
-                )}
-              </h2>
+        <div className="flex-1 flex h-[calc(100vh-4rem)]">
+          <div className="w-1/2 border-r border-gray-800 p-6 flex flex-col h-full">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-3">
+                <ComputerDesktopIcon className="w-6 h-6 text-primary-400" />
+                <h2 className="text-lg font-semibold text-white">AI's Stance</h2>
+              </div>
+              {!isUserTurn && turnTimeLeft && (
+                <Timer 
+                  seconds={turnTimeLeft}
+                  isCountdown={true}
+                  onTimeUp={handleTurnTimeUp}
+                  label="Time"
+                  isActive={isUserTurn}
+                />
+              )}
             </div>
-            {isUserTurn && turnTimeLeft && (
-              <Timer 
-                seconds={turnTimeLeft}
-                isCountdown={true}
-                onTimeUp={handleTurnTimeUp}
-                label="Time"
-                isActive={isUserTurn}
-              />
-            )}
-          </div>
-          
-          <div className="flex-1 bg-gray-800/40 backdrop-blur-xl rounded-xl border border-gray-700/50 flex flex-col max-h-[calc(100vh-10rem)]">
-            <div className="flex-1 p-6 overflow-y-auto scrollbar-custom h-full flex flex-col">
-              <div className="flex-1">
+            
+            <div className="flex-1 bg-gray-800/40 backdrop-blur-xl rounded-xl border border-gray-700/50 flex flex-col max-h-[calc(100vh-10rem)]">
+              <div 
+                ref={aiResponseRef}
+                className="flex-1 p-6 overflow-y-auto scrollbar-custom h-full"
+              >
                 {messages.map((msg, index) => (
-                  msg.type === 'user' && (
+                  msg.type === 'ai' && (
                     <div key={index} className="mb-4 text-white whitespace-pre-wrap font-mono">
                       {msg.content}
                       <div className="border-b border-gray-700/50 my-4" />
                     </div>
                   )
                 ))}
+                {aiResponse && (
+                  <div className="text-white whitespace-pre-wrap font-mono">
+                    {aiResponse}
+                  </div>
+                )}
               </div>
-              
-              <DebateInput 
-                onSubmit={handleUserInput}
-                disabled={!isUserTurn || isAIResponding}
-              />
+            </div>
+          </div>
+
+          <div className="w-1/2 p-6 flex flex-col h-full">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-3">
+                <UserIcon className="w-6 h-6 text-secondary-400" />
+                <h2 className="text-lg font-semibold text-white">
+                  Your Response
+                  {isLastTurn && (
+                    <span className="ml-2 text-sm text-red-500 font-normal">
+                      (Final Turn)
+                    </span>
+                  )}
+                </h2>
+              </div>
+              {isUserTurn && turnTimeLeft && (
+                <Timer 
+                  seconds={turnTimeLeft}
+                  isCountdown={true}
+                  onTimeUp={handleTurnTimeUp}
+                  label="Time"
+                  isActive={isUserTurn}
+                />
+              )}
+            </div>
+            
+            <div className="flex-1 bg-gray-800/40 backdrop-blur-xl rounded-xl border border-gray-700/50 flex flex-col max-h-[calc(100vh-10rem)]">
+              <div className="flex-1 p-6 overflow-y-auto scrollbar-custom h-full flex flex-col">
+                <div className="flex-1">
+                  {messages.map((msg, index) => (
+                    msg.type === 'user' && (
+                      <div key={index} className="mb-4 text-white whitespace-pre-wrap font-mono">
+                        {msg.content}
+                        <div className="border-b border-gray-700/50 my-4" />
+                      </div>
+                    )
+                  ))}
+                </div>
+                
+                <DebateInput 
+                  onSubmit={handleUserInput}
+                  disabled={!isUserTurn || isAIResponding}
+                />
+              </div>
             </div>
           </div>
         </div>
+        
+        <ScoreModal
+          isOpen={showScoreModal}
+          onClose={() => {
+            setShowScoreModal(false);
+            navigate('/dashboard');
+          }}
+          debateId={debateId}
+          isLoading={isLoading}
+        />
       </div>
-      
-      <ScoreModal
-        isOpen={showScoreModal}
-        onClose={() => {
-          setShowScoreModal(false);
-          navigate('/dashboard');
-        }}
-        debateId={debateId}
-        isLoading={isLoading}
-      />
-    </div>
+    </>
   );
 };
 

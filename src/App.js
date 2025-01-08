@@ -19,6 +19,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Terms from './pages/Terms';
 import { useEffect } from 'react';
 import { initializeGA, pageView } from './utils/analytics';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Create a wrapper component that uses Router hooks
 function AppContent() {
@@ -100,10 +101,12 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
       <AuthProvider>
-        <Router>
-          <AppContent />
-          <Toaster position="top-right" />
-        </Router>
+        <HelmetProvider>
+          <Router>
+            <AppContent />
+            <Toaster position="top-right" />
+          </Router>
+        </HelmetProvider>
       </AuthProvider>
     </GoogleOAuthProvider>
   );
