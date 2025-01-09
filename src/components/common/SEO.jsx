@@ -7,7 +7,7 @@ const SEO = ({
   ogImage = 'https://letsdebate.in/og-image.jpg',
   ogType = 'website'
 }) => {
-  const siteTitle = 'DebateAI';
+  const siteTitle = 'DebateGPT';
   const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
 
   return (
