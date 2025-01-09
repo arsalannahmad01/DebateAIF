@@ -245,18 +245,19 @@ const Practice = () => {
                 Back to Dashboard
               </button>
 
+
+              {debateData && (
+                <div className="text-white font-medium">
+                  {debateData.title}
+                </div>
+              )}
+              
               {totalTimeLeft && (
                 <Timer 
                   seconds={totalTimeLeft}
                   isCountdown={false}
                   label="Debate Time"
                 />
-              )}
-
-              {debateData && (
-                <div className="text-white font-medium">
-                  {debateData.name}
-                </div>
               )}
             </div>
           </div>
@@ -293,9 +294,13 @@ const Practice = () => {
                     </div>
                   )
                 ))}
-                {aiResponse && (
+                {aiResponse.length > 0 ? (
                   <div className="text-white whitespace-pre-wrap font-mono">
                     {aiResponse}
+                  </div>
+                ) : (
+                  <div className="text-gray-500 whitespace-pre-wrap font-mono">
+                    { isUserTurn ? "Waiting for your response..." : "AI is thinking..."}
                   </div>
                 )}
               </div>
