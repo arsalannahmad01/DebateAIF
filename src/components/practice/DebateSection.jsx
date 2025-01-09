@@ -49,16 +49,19 @@ const DebateSection = ({
           >
             {aiMessages.map((message, index) => (
               <AIResponse 
-                key={index} 
+                key={index}
                 message={message} 
                 isStreaming={message.isStreaming}
               />
             ))}
-            {waitingForAIResponse && !messages.some(m => m.isStreaming) && (
-              <div className="flex items-center space-x-2 text-gray-500 p-4">
-                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" />
-                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-100" />
-                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-200" />
+            {waitingForAIResponse && (
+              <div className="flex flex-col items-center justify-center p-8 text-gray-500">
+                <div className="flex space-x-2 mb-3">
+                  <div className="w-2 h-2 bg-primary-400 rounded-full animate-bounce" />
+                  <div className="w-2 h-2 bg-primary-400 rounded-full animate-bounce [animation-delay:-.3s]" />
+                  <div className="w-2 h-2 bg-primary-400 rounded-full animate-bounce [animation-delay:-.5s]" />
+                </div>
+                <span className="text-sm">AI is thinking...</span>
               </div>
             )}
           </div>

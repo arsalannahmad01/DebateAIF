@@ -152,24 +152,22 @@ const Practice = () => {
       setUserInput('');
 
       if (isLastTurn) {
-        try {
-          // Show score modal
-          setShowScoreModal(true);
-        } catch (error) {
-          console.error('Failed to complete debate:', error);
-          toast.error('Failed to get debate results');
-        }
-      } else {
-        // If not last turn, continue with AI response
+        // Important: Set these states before showing score modal
         setIsUserTurn(false);
-        setIsAIResponding(true);
+        setIsAIResponding(false);
+        setShowScoreModal(true);
+        return; // Exit early on last turn
+      }
 
-        const reader = await debateService.getAIResponse(debateId, { content: input });
-        if (reader) {
-          handleAIStream(reader);
-        } else {
-          throw new Error('No stream available from response');
-        }
+      // If not last turn, continue with AI response
+      setIsUserTurn(false);
+      setIsAIResponding(true);
+
+      const reader = await debateService.getAIResponse(debateId, { content: input });
+      if (reader) {
+        handleAIStream(reader);
+      } else {
+        throw new Error('No stream available from response');
       }
     } catch (error) {
       console.error('Failed to send user input:', error);
