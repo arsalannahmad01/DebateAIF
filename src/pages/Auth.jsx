@@ -16,7 +16,7 @@ const Auth = () => {
 
   const handleAuthSuccess = async (userData) => {
     login(userData);
-    toast.success('Welcome to DebateAI!');
+    toast.success('Welcome to DebateGPT!');
     navigate('/dashboard');
   };
 
@@ -120,7 +120,7 @@ const Auth = () => {
                   >
                     <span className="text-transparent bg-clip-text bg-gradient-to-r 
                                  from-primary-400 via-primary-200 to-secondary-400">
-                      Welcome to DebateAI
+                      Welcome to DebateGPT
                     </span>
                   </motion.h2>
                   <motion.p

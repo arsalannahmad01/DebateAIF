@@ -15,7 +15,7 @@ const Terms = () => {
       icon: DocumentTextIcon,
       title: "Agreement to Terms",
       content: [
-        "By accessing DebateAI, you agree to be bound by these Terms of Service",
+        "By accessing DebateGPT, you agree to be bound by these Terms of Service",
         "You must be at least 13 years old to use our services",
         "You are responsible for maintaining the security of your account",
         "You agree to provide accurate and complete information"
@@ -45,7 +45,7 @@ const Terms = () => {
       icon: ScaleIcon,
       title: "Intellectual Property",
       content: [
-        "All platform content is owned by DebateAI",
+        "All platform content is owned by DebateGPT",
         "Users retain ownership of their debate content",
         "Limited license granted for platform use",
         "Respect copyright and trademark rights"
@@ -77,7 +77,7 @@ const Terms = () => {
     <>
       <SEO 
         title="Terms of Service"
-        description="Read our terms of service to understand the rules and guidelines for using DebateAI's platform."
+        description="Read our terms of service to understand the rules and guidelines for using DebateGPT's platform."
         keywords={[
           'terms of service',
           'user agreement',

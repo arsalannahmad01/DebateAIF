@@ -64,7 +64,7 @@ const PrivacyPolicy = () => {
     <>
       <SEO 
         title="Privacy Policy"
-        description="Learn how we protect your privacy and handle your data at DebateAI."
+        description="Learn how we protect your privacy and handle your data at DebateGPT."
         keywords={[
           'privacy policy',
           'data protection',

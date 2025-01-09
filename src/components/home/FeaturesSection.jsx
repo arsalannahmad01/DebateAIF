@@ -56,7 +56,7 @@ const FeaturesSection = () => {
         >
           <span className="text-primary-400 font-semibold tracking-wider uppercase">Features</span>
           <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-6 text-white">
-            Why Choose <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400">DebateAI</span>?
+            Why Choose <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400">DebateGPT</span>?
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
             Experience the future of debate practice with our cutting-edge AI technology

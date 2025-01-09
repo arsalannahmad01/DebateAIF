@@ -35,9 +35,9 @@ const About = () => {
     <>
       <SEO 
         title="About Us"
-        description="Learn about DebateAI's mission to democratize debate practice through AI technology. Discover how we're making quality debate training accessible to everyone."
+        description="Learn about DebateGPT's mission to democratize debate practice through AI technology. Discover how we're making quality debate training accessible to everyone."
         keywords={[
-          'about DebateAI',
+          'about DebateGPT',
           'debate platform',
           'AI technology',
           'debate training',
@@ -58,7 +58,7 @@ const About = () => {
               className="text-center"
             >
               <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-                About <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400">DebateAI</span>
+                About <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400">DebateGPT</span>
               </h1>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
                 Transforming debate practice through AI innovation and making quality debate training accessible to everyone.
@@ -112,7 +112,7 @@ const About = () => {
             </h2>
             <div className="prose prose-lg prose-invert max-w-none">
               <p className="text-gray-300">
-                At DebateAI, we believe that the art of debate is more crucial than ever in today's world. 
+                At DebateGPT, we believe that the art of debate is more crucial than ever in today's world. 
                 Our mission is to democratize access to high-quality debate practice, enabling individuals 
                 to develop their critical thinking and argumentation skills regardless of their location or resources.
               </p>

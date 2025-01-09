@@ -8,7 +8,7 @@ const Logo = () => {
       className="text-2xl font-bold gradient-text cursor-pointer" 
       onClick={() => navigate('/')}
     >
-      DebateAI
+      DebateGPT
     </div>
   );
 };

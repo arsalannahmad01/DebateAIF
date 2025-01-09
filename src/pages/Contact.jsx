@@ -62,7 +62,7 @@ const Contact = () => {
     <>
       <SEO 
         title="Contact Us"
-        description="Get in touch with the DebateAI team. We're here to help with your questions and feedback."
+        description="Get in touch with the DebateGPT team. We're here to help with your questions and feedback."
         keywords={[
           'contact',
           'support',

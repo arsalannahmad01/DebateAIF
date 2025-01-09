@@ -114,7 +114,7 @@ const Footer = () => {
 
             {/* Copyright */}
             <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} DebateAI. All rights reserved.
+              © {new Date().getFullYear()} DebateGPT. All rights reserved.
             </p>
           </div>
         </div>
